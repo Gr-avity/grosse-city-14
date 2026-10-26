@@ -130,6 +130,14 @@ public abstract partial class SharedMoverController : VirtualController
         var uid = entity.Owner;
         var mover = entity.Comp;
 
+        // Grosse-change start:
+        if (mover.Sprinting && TryComp<Damage.Components.StaminaComponent>(uid, out var staminaComp) &&
+            staminaComp.StaminaDamage >= staminaComp.AnimationThreshold)
+        {
+            SetMoveInput((uid, mover), ushort.MaxValue, true, MoveButtons.Walk);
+        }
+        // Grosse-change end
+
         // If we're a relay then apply all of our data to the parent instead and go next.
         if (RelayQuery.TryComp(uid, out var relay))
         {
